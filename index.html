@@ -1,0 +1,80 @@
+<html lang="en">
+
+<head>
+	<meta charset="etf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- bootstrap css libraries-->
+	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="css/main.css">
+	<link rel="stylesheet" type="text/css" href="css/barChart.css">
+
+	<!-- jquery/ bootstrap js libraries-->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+
+	<div class="container">
+
+		<h1>Visualization</h1>
+		<p>Assignment 1</p>
+
+		<ul class="nav nav-tabs">
+			<li class="active"><a href="#barChart" data-toggle="tab">Bar Charts</a></li>
+			<li><a href="#histogramChart" data-toggle="tab">Histograms</a></li>
+		</ul>
+
+		<div class="tab-content">
+			<div id="barChart" class="tab-pane fade in active">
+				<h3>Bar Charts</h3>
+				<div class="row">
+					<div class="col-md-4 well">
+						<h5>Select a parameter</h5>
+						<div class="dropdown">
+							<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1"
+								data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+							</button>
+							<ul id="menu1" class="dropdown-menu" aria-labelledby="dropdownMenu1">
+								<li style="padding-left: 5px; color: lightgray"> Numerical</li>
+								<li><a href="#">Aces</a></li>
+								<li><a href="#">Weight</a></li>
+								<li><a href="#">Height</a></li>
+								<li><a href="#">Double Fault</a></li>
+								<li role="separator" class="divider"></li>
+								<li style="padding-left: 5px; color: lightgray"> Categorical</li>
+								<li><a href="#">Nationality</a></li>
+							</ul>
+						</div>
+					</div>
+					<div class="col-md-1"></div>
+					<div class="col-md-7  well">
+						<p id="barChartp1"></p>
+						<section id="barChartContainer">
+							<svg width="500" height="500"></svg>
+						</section>
+					</div>
+				</div>
+
+			</div>
+			<div id="histogramChart" class="tab-pane fade">
+				<h3>Histograms</h3>
+				<div class='axis-chart'></div>
+				<p></p>
+			</div>
+		</div>
+	</div>
+
+	</div>
+
+</body>
+<!-- d3 libraries-->
+<script src="http://d3js.org/d3.v5.min.js" charset="utf-8"></script>
+<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+<script src="js/player.js"></script>
+<script src="js/index.js"></script>
+<script src="js/barChart.js"></script>
+<script src="js/histogram.js"></script>
+
+
+</html>
