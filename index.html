@@ -13,7 +13,7 @@
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 </head>
 
-<body>
+<body onresize="myFunction()">
 
 	<div class="container">
 
@@ -21,37 +21,42 @@
 		<p>Assignment 1</p>
 
 		<ul class="nav nav-tabs">
-			<li class="active"><a href="#barChart" data-toggle="tab">Bar Charts</a></li>
-			<li><a href="#histogramChart" data-toggle="tab">Histograms</a></li>
+			<li class="active"><a href="#barChart" data-toggle="tab">Categorical</a></li>
+			<li><a href="#histogramChart" data-toggle="tab">Continous</a></li>
 		</ul>
 
-		<div class="tab-content">
+		<div class="tab-content container">
 			<div id="barChart" class="tab-pane fade in active">
-				<h3>Bar Charts</h3>
-				<div class="row">
-					<div class="col-md-4 well">
-						<h5>Select a parameter</h5>
-						<div class="dropdown">
-							<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1"
-								data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-							</button>
-							<ul id="menu1" class="dropdown-menu" aria-labelledby="dropdownMenu1">
-								<li style="padding-left: 5px; color: lightgray"> Numerical</li>
-								<li><a href="#">Aces</a></li>
-								<li><a href="#">Weight</a></li>
-								<li><a href="#">Height</a></li>
-								<li><a href="#">Double Fault</a></li>
-								<li role="separator" class="divider"></li>
-								<li style="padding-left: 5px; color: lightgray"> Categorical</li>
-								<li><a href="#">Nationality</a></li>
-							</ul>
+
+				<div class="row justify-content-center" style="padding: 10px">
+
+					<div class="col-md-3 col-sm-10 col-xs-10">
+						<div class="row well">
+							<h3>Categorical Variables</h3>
+						</div>
+						<div class="row well">
+							<h5>Select a parameter</h5>
+							<div class="dropdown">
+								<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1"
+									data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+								</button>
+								<ul id="menu1" class="dropdown-menu" aria-labelledby="dropdownMenu1">
+								</ul>
+							</div>
+						</div>
+
+						<div class="row well">
+							<h5>Modify axis</h5>
+							<div class="checkbox" >
+								<label><input id="cb1" type="checkbox" onchange='checkBoxChanged(this);' checked>Sorted by Values</label>
+							</div>
 						</div>
 					</div>
 					<div class="col-md-1"></div>
-					<div class="col-md-7  well">
+					<div class="col-md-8 col-sm-10 col-xs-10 well" style="height: 500px;">
 						<p id="barChartp1"></p>
 						<section id="barChartContainer">
-							<svg width="500" height="500"></svg>
+							<svg></svg>
 						</section>
 					</div>
 				</div>
@@ -72,9 +77,10 @@
 <script src="http://d3js.org/d3.v5.min.js" charset="utf-8"></script>
 <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
 <script src="js/player.js"></script>
+<script src="js/dataProcessing.js"></script>
 <script src="js/index.js"></script>
 <script src="js/barChart.js"></script>
-<script src="js/histogram.js"></script>
+<!-- <script src="js/histogram.js"></script> -->
 
 
 </html>

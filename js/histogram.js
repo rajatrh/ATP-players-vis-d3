@@ -2,9 +2,9 @@ var data = d3.range(1000).map(d3.randomBates(10));
 
 var formatCount = d3.format(",.0f");
 
-var margin = {top: 10, right: 30, bottom: 30, left: 30},
-    width = 960 - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom;
+// var margin = {top: 10, right: 30, bottom: 30, left: 30},
+//     width = 960 - margin.left - margin.right,
+//     height = 500 - margin.top - margin.bottom;
 
 var x = d3.scaleLinear()
     .rangeRound([0, width]);
