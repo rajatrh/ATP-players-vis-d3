@@ -1,11 +1,10 @@
 var whatKind = Object.keys(overallData)[0];
-
+var checkBoxed = true;
 
 // get the data
 fileName = "data/ATP/players_info.csv";
 players = []
 d3.csv(fileName).then(function (data) {
-    // .slice(0, 10)
     data.forEach(p => {
         var play = new player(p);
         players.push(play);
@@ -13,7 +12,6 @@ d3.csv(fileName).then(function (data) {
 
     getCurrentData(whatKind, players);
     modifyCharts(currentData);
-    //createGraph(players, "aces");
 });
 
 
@@ -42,16 +40,26 @@ ul.onclick = function (event) {
     whatKind = target.innerHTML;
     p1.innerHTML = "Distribution of tennis players by " + whatKind
     document.getElementById("cb1").checked = true;
+    checkBoxed = true;
+    document.getElementById("slider1").value = 20;
     getCurrentData(whatKind, players);
     modifyCharts(currentData);
 };
 
 function checkBoxChanged(checkbox) {
-    if (checkbox.checked == true) {
+    checkBoxed = checkbox.checked;
+    if (checkBoxed== true) {
         getCurrentData(whatKind, players, true);
         modifyCharts(currentData);
     } else {
         getCurrentData(whatKind, players, false);
         modifyCharts(currentData);
     }
+}
+
+var slider = document.getElementById("slider1");
+// Update the current slider value (each time you drag the slider handle)
+slider.oninput = function () {
+    getCurrentData(whatKind, players, checkBoxed, this.value);
+    modifyCharts(currentData);
 }

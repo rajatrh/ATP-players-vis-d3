@@ -1,13 +1,15 @@
 // function to recreate bar chart
 function modifyCharts(players) {
 
-    var margin = { top: 20, right: 20, bottom: 50, left: 40 };
+    var margin = { top: 20, right: 20, bottom: 50, left: 50 };
     var width = parseInt(d3.select("#barChartContainer").style("width")) - margin.left - margin.right;
     var height = 380 - margin.top - margin.bottom;
 
     var x = d3.scaleBand()
         .rangeRound([0, width])
-        .padding(0.05);
+        .paddingOuter(0.2)
+        .paddingInner(0.1);
+
     var y = d3.scaleLinear()
         .rangeRound([height, 0]);
     document.getElementById("barChartContainer").innerHTML = "";
@@ -17,10 +19,10 @@ function modifyCharts(players) {
         .attr("class", "svg-bkg")
         .attr("width", "100%")
         .attr("height", "90%")
-    //.attr("viewBox", `0 0 300 500`)
-    // var svg = d3.select("svg");
+
     g = svg.append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
     var tip = d3.select("#barChartContainer")
         .append("div")
         .attr("class", "tip")
@@ -33,7 +35,6 @@ function modifyCharts(players) {
 
     // x- axis
     g.append("g")
-        .attr("class", "axis axis--x")
         .attr("transform", "translate(0," + (height) + ")")
         .call(d3.axisBottom(x))
         .selectAll("text")
@@ -43,22 +44,21 @@ function modifyCharts(players) {
         .attr("transform", "rotate(-40)");
 
     g.append("text")
-        .attr("y", height + 30)
-        .attr("dy", "2.5em")
+        .attr("y", height + 70)
         .attr("dx", width / 2 - margin.left)
         .attr("text-anchor", "start")
         .text(whatKind)
 
     //y-axis
     g.append("g")
-        .attr("class", "axis axis--y")
         .call(d3.axisLeft(y).ticks(10))
-        .append("text")
+
+    g.append("text")
         .attr("transform", "rotate(-90)")
-        .attr("y", 6)
-        .attr("dy", "0.71em")
+        .attr("x", -height / 2)
+        .attr("y", -40)
         .attr("text-anchor", "end")
-        .text("count");
+        .text("Count")
 
     //on hover
     g.selectAll(".bar")
@@ -67,15 +67,28 @@ function modifyCharts(players) {
         .attr("class", "bar")
         .attr("x", function (d) { return x(d.key); })
         .attr("y", function (d) { return y(d.value); })
-        .attr("width", x.bandwidth())
+        .attr("width", x.bandwidth() - 5)
         .attr("height", function (d) { return height - y(d.value) })
         .on("mouseover", function (d) {
-            return tip.text(d.value)
-                .style("visibility", "visible")
-                .style("top", y(d.value) - 13 + 'px')
-                .style("left", x(d.key) + x.bandwidth() - 12 + 'px')
+
+            // increase the width
+            var xPos = +d3.select(this).attr("x")
+            var wid = +d3.select(this).attr("width");
+            d3.select(this).attr("x", xPos - 3).attr("width", wid + 6);
+
+            // Create tip with HTML
+            return tip.html(function () {
+                return "<strong> " + d.key + "</strong> : <span style='color:orange'>" + d.value + "</span>";   //tip.text(d.value)
+            }).style("visibility", "visible")
+                .style("top", (y(d.value) - 11) + 'px')
+                .style("left", x(d.key) + x.bandwidth() + 4 + 'px')
         })
         .on("mouseout", function () {
+            // reset the width and postition
+            d3.select(this).attr("x", function (d) {
+                return x(d.key)
+            })
+                .attr("width", x.bandwidth() - 5);
             return tip.style("visibility", "hidden");
         });
 }

@@ -1,48 +1,94 @@
-var data = d3.range(1000).map(d3.randomBates(10));
+// function to recreate bar chart
+function modifyCharts(players) {
 
-var formatCount = d3.format(",.0f");
+    var margin = { top: 20, right: 20, bottom: 50, left: 50 };
+    var width = parseInt(d3.select("#barChartContainer").style("width")) - margin.left - margin.right;
+    var height = 380 - margin.top - margin.bottom;
 
-// var margin = {top: 10, right: 30, bottom: 30, left: 30},
-//     width = 960 - margin.left - margin.right,
-//     height = 500 - margin.top - margin.bottom;
+    var x = d3.scaleBand()
+        .rangeRound([0, width])
+        .paddingOuter(0.2)
+        .paddingInner(0.1);
 
-var x = d3.scaleLinear()
-    .rangeRound([0, width]);
+    var y = d3.scaleLinear()
+        .rangeRound([height, 0]);
+    document.getElementById("barChartContainer").innerHTML = "";
 
-var bins = d3.histogram()
-    .domain(x.domain())
-    .thresholds(x.ticks(20))
-    (data);
+    svg = d3.select("#barChartContainer")
+        .append("svg")
+        .attr("class", "svg-bkg")
+        .attr("width", "100%")
+        .attr("height", "90%")
 
-var y = d3.scaleLinear()
-    .domain([0, d3.max(bins, function(d) { return d.length; })])
-    .range([height, 0]);
+    g = svg.append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-var svg = d3.select("body").append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-  .append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    var tip = d3.select("#barChartContainer")
+        .append("div")
+        .attr("class", "tip")
+        .style("position", "absolute")
+        .style("visibility", "hidden")
+        .style("z-index", "20");
 
-var bar = svg.selectAll(".bar")
-    .data(bins)
-  .enter().append("g")
-    .attr("class", "bar")
-    .attr("transform", function(d) { return "translate(" + x(d.x0) + "," + y(d.length) + ")"; });
+    x.domain(players.map(function (d) { return d.key; }));
+    y.domain([0, d3.max(players, function (d) { return d.value; })]);
 
-bar.append("rect")
-    .attr("x", 1)
-    .attr("width", x(bins[0].x1) - x(bins[0].x0) - 1)
-    .attr("height", function(d) { return height - y(d.length); });
+    // x- axis
+    g.append("g")
+        .attr("transform", "translate(0," + (height) + ")")
+        .call(d3.axisBottom(x))
+        .selectAll("text")
+        .attr("x", "-5")
+        .attr("y", "15")
+        .attr("text-anchor", "end")
+        .attr("transform", "rotate(-40)");
 
-bar.append("text")
-    .attr("dy", ".75em")
-    .attr("y", 6)
-    .attr("x", (x(bins[0].x1) - x(bins[0].x0)) / 2)
-    .attr("text-anchor", "middle")
-    .text(function(d) { return formatCount(d.length); });
+    g.append("text")
+        .attr("y", height + 70)
+        .attr("dx", width / 2 - margin.left)
+        .attr("text-anchor", "start")
+        .text(whatKind)
 
-svg.append("g")
-    .attr("class", "axis axis--x")
-    .attr("transform", "translate(0," + height + ")")
-    .call(d3.axisBottom(x));
+    //y-axis
+    g.append("g")
+        .call(d3.axisLeft(y).ticks(10))
+
+    g.append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("x", -height / 2)
+        .attr("y", -40)
+        .attr("text-anchor", "end")
+        .text("Count")
+
+    //on hover
+    g.selectAll(".bar")
+        .data(players)
+        .enter().append("rect")
+        .attr("class", "bar")
+        .attr("x", function (d) { return x(d.key); })
+        .attr("y", function (d) { return y(d.value); })
+        .attr("width", x.bandwidth() - 5)
+        .attr("height", function (d) { return height - y(d.value) })
+        .on("mouseover", function (d) {
+
+            // increase the width
+            var xPos = +d3.select(this).attr("x")
+            var wid = +d3.select(this).attr("width");
+            d3.select(this).attr("x", xPos - 3).attr("width", wid + 6);
+
+            // Create tip with HTML
+            return tip.html(function () {
+                return "<strong> " + d.key + "</strong> : <span style='color:orange'>" + d.value + "</span>";   //tip.text(d.value)
+            }).style("visibility", "visible")
+                .style("top", (y(d.value) - 11) + 'px')
+                .style("left", x(d.key) + x.bandwidth() + 4 + 'px')
+        })
+        .on("mouseout", function () {
+            // reset the width and postition
+            d3.select(this).attr("x", function (d) {
+                return x(d.key)
+            })
+                .attr("width", x.bandwidth() - 5);
+            return tip.style("visibility", "hidden");
+        });
+}

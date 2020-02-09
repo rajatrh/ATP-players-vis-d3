@@ -13,7 +13,7 @@
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 </head>
 
-<body onresize="myFunction()">
+<body>
 
 	<div class="container">
 
@@ -51,6 +51,14 @@
 								<label><input id="cb1" type="checkbox" onchange='checkBoxChanged(this);' checked>Sorted by Values</label>
 							</div>
 						</div>
+
+						<div class="row well">
+							<h5>Slide number of bars</h5>
+							<div class="slidecontainer">
+								<input type="range" min="5" max="25" value="20" id="slider1">
+							  </div>
+						</div>
+
 					</div>
 					<div class="col-md-1"></div>
 					<div class="col-md-8 col-sm-10 col-xs-10 well" style="height: 500px;">
@@ -63,9 +71,39 @@
 
 			</div>
 			<div id="histogramChart" class="tab-pane fade">
-				<h3>Histograms</h3>
-				<div class='axis-chart'></div>
-				<p></p>
+				<div class="row justify-content-center" style="padding: 10px">
+
+					<div class="col-md-3 col-sm-10 col-xs-10">
+						<div class="row well">
+							<h3>Numerical Variables</h3>
+						</div>
+						<div class="row well">
+							<h5>Select a parameter</h5>
+							<div class="dropdown">
+								<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2"
+									data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+								</button>
+								<ul id="menu1" class="dropdown-menu" aria-labelledby="dropdownMenu2">
+								</ul>
+							</div>
+						</div>
+
+						<div class="row well">
+							<h5>Slide number of bins</h5>
+							<div class="slidecontainer">
+								<input type="range" min="5" max="25" value="20" id="slider2">
+							  </div>
+						</div>
+
+					</div>
+					<div class="col-md-1"></div>
+					<div class="col-md-8 col-sm-10 col-xs-10 well" style="height: 500px;">
+						<p id="barChartp2"></p>
+						<section id="histogramContainer">
+							<svg></svg>
+						</section>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -75,12 +113,12 @@
 </body>
 <!-- d3 libraries-->
 <script src="http://d3js.org/d3.v5.min.js" charset="utf-8"></script>
-<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.7.1/d3-tip.min.js"></script>
 <script src="js/player.js"></script>
 <script src="js/dataProcessing.js"></script>
 <script src="js/index.js"></script>
 <script src="js/barChart.js"></script>
-<!-- <script src="js/histogram.js"></script> -->
+<script src="js/histogram.js"></script>
 
 
 </html>

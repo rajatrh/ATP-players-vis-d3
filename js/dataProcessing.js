@@ -1,18 +1,29 @@
-overallData = {
-    "Nationality": { key: "nat", data: [], natData: [] },
-    "Age": { key: "age", data: [],  natData: [] }
-};
+metaData = {
+    "categorical": {
+        "Nationality": { key: "nat", data: [], natData: [] },
+        "Age": { key: "age", data: [], natData: [] },
+        "Turned Pro": { key: "turned_pro", data: [], natData: [] }
+    },
+    "numerical": {
+        "Nationality": { key: "nat", data: [], natData: [] },
+        "Age": { key: "age", data: [], natData: [] },
+        "Turned Pro": { key: "turned_pro", data: [], natData: [] }
+    }
+}
 
+overallData = metaData['categorical'];
 currentData = [];
 
 function processData(viewWhat, players) {
     key = overallData[viewWhat]['key'];
     repMap = {};
     players.forEach(player => {
-        if (!(player[key] in repMap)) {
-            repMap[player[key]] = 1;
-        } else {
-            repMap[player[key]] += 1;
+        if (player[key] != 0) {
+            if (!(player[key] in repMap)) {
+                repMap[player[key]] = 1;
+            } else {
+                repMap[player[key]] += 1;
+            }
         }
     });
 
@@ -20,7 +31,6 @@ function processData(viewWhat, players) {
     for (var key in repMap) {
         sortable.push([key, repMap[key]]);
     }
-
 
     // unsorted Data
     repMap = []
@@ -42,16 +52,13 @@ function processData(viewWhat, players) {
     overallData[viewWhat]['data'] = repMap;
 }
 
-function getCurrentData(viewWhat, players, sorted=true) {
+function getCurrentData(viewWhat, players, sorted = true, sliceValue = 20) {
     if (overallData[viewWhat]['data'].length == 0) {
         processData(viewWhat, players);
     }
     if (sorted) {
-        currentData = overallData[viewWhat]['data'].slice(0, 20);
+        currentData = overallData[viewWhat]['data'].slice(0, sliceValue);
     } else {
-        currentData = overallData[viewWhat]['natData'].slice(0, 20);
+        currentData = overallData[viewWhat]['natData'].slice(0, sliceValue);
     }
-
-    console.log(currentData)
-   
 }
