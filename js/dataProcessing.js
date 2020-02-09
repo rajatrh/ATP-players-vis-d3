@@ -1,20 +1,24 @@
 metaData = {
-    "categorical": {
+    "Categorical": {
         "Nationality": { key: "nat", data: [], natData: [] },
         "Age": { key: "age", data: [], natData: [] },
         "Turned Pro": { key: "turned_pro", data: [], natData: [] }
     },
-    "numerical": {
-        "Nationality": { key: "nat", data: [], natData: [] },
-        "Age": { key: "age", data: [], natData: [] },
-        "Turned Pro": { key: "turned_pro", data: [], natData: [] }
+    "Numerical": {
+        "Weight": { key: "weight", data: [], natData: [] },
+        "Height": { key: "height", data: [], natData: [] },
+        "Aces": { key: "aces", data: [], natData: [] },
+        "Double Faults": { key: "double_faults", data: [], natData: [] }
     }
 }
 
-overallData = metaData['categorical'];
+var metaDataKind = 'Categorical';
+overallData = metaData['Categorical'];
 currentData = [];
 
-function processData(viewWhat, players) {
+var whatKind = Object.keys(overallData)[0];
+
+function processCategoricalData(viewWhat, players) {
     key = overallData[viewWhat]['key'];
     repMap = {};
     players.forEach(player => {
@@ -52,13 +56,36 @@ function processData(viewWhat, players) {
     overallData[viewWhat]['data'] = repMap;
 }
 
+function processNumericalData(viewWhat, players) {
+    key = overallData[viewWhat]['key'];
+    values = [];
+    players.forEach(player => {
+        if (player[key] != 0) {
+            values.push(player[key]);
+        }
+    });
+
+    values.sort(function (a, b) {
+        return a - b;
+    });
+    overallData[viewWhat]['data'] = values;
+}
+
 function getCurrentData(viewWhat, players, sorted = true, sliceValue = 20) {
-    if (overallData[viewWhat]['data'].length == 0) {
-        processData(viewWhat, players);
+    if (metaDataKind == 'Categorical') {
+        if (overallData[viewWhat]['data'].length == 0) {
+            processCategoricalData(viewWhat, players);
+        }
+        if (sorted) {
+            currentData = overallData[viewWhat]['data'].slice(0, sliceValue);
+        } else {
+            currentData = overallData[viewWhat]['natData'].slice(0, sliceValue);
+        }
+    } else if (metaDataKind == 'Numerical') {
+        if (overallData[viewWhat]['data'].length == 0) {
+            processNumericalData(viewWhat, players);
+        }
+        currentData = overallData[viewWhat]['data'];
     }
-    if (sorted) {
-        currentData = overallData[viewWhat]['data'].slice(0, sliceValue);
-    } else {
-        currentData = overallData[viewWhat]['natData'].slice(0, sliceValue);
-    }
+    //console.log(currentData);
 }

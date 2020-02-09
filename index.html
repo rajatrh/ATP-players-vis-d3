@@ -22,7 +22,7 @@
 
 		<ul class="nav nav-tabs">
 			<li class="active"><a href="#barChart" data-toggle="tab">Categorical</a></li>
-			<li><a href="#histogramChart" data-toggle="tab">Continous</a></li>
+			<li><a href="#histogramChart" data-toggle="tab">Numerical</a></li>
 		</ul>
 
 		<div class="tab-content container">
@@ -46,9 +46,10 @@
 						</div>
 
 						<div class="row well">
-							<h5>Modify axis</h5>
-							<div class="checkbox" >
-								<label><input id="cb1" type="checkbox" onchange='checkBoxChanged(this);' checked>Sorted by Values</label>
+							<h5>Modify X-axis</h5>
+							<div class="checkbox">
+								<label><input id="cb1" type="checkbox" onchange='checkBoxChanged(this);' checked>Sorted
+									by Values</label>
 							</div>
 						</div>
 
@@ -56,14 +57,14 @@
 							<h5>Slide number of bars</h5>
 							<div class="slidecontainer">
 								<input type="range" min="5" max="25" value="20" id="slider1">
-							  </div>
+							</div>
 						</div>
 
 					</div>
 					<div class="col-md-1"></div>
 					<div class="col-md-8 col-sm-10 col-xs-10 well" style="height: 500px;">
 						<p id="barChartp1"></p>
-						<section id="barChartContainer">
+						<section id="barChartContainer" class="col-md-12 col-xs-12 col-lg-12 col-sm-12">
 							<svg></svg>
 						</section>
 					</div>
@@ -83,7 +84,7 @@
 								<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2"
 									data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
 								</button>
-								<ul id="menu1" class="dropdown-menu" aria-labelledby="dropdownMenu2">
+								<ul id="menu2" class="dropdown-menu" aria-labelledby="dropdownMenu2">
 								</ul>
 							</div>
 						</div>
@@ -91,8 +92,8 @@
 						<div class="row well">
 							<h5>Slide number of bins</h5>
 							<div class="slidecontainer">
-								<input type="range" min="5" max="25" value="20" id="slider2">
-							  </div>
+								<input type="range" min="5" max="25" value="15" id="slider2">
+							</div>
 						</div>
 
 					</div>

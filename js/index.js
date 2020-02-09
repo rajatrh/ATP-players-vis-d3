@@ -1,7 +1,8 @@
-var whatKind = Object.keys(overallData)[0];
-var checkBoxed = true;
-
 // get the data
+var margin = { top: 20, right: 20, bottom: 50, left: 50 };
+var width = parseInt(d3.select("#barChartContainer").style("width")) - margin.left - margin.right;
+var height = 380 - margin.top - margin.bottom;
+
 fileName = "data/ATP/players_info.csv";
 players = []
 d3.csv(fileName).then(function (data) {
@@ -11,55 +12,52 @@ d3.csv(fileName).then(function (data) {
     });
 
     getCurrentData(whatKind, players);
-    modifyCharts(currentData);
+    modifyBarChart(currentData);
 });
 
+// Capture tab Change
+$('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
+    console.log()
+    metaDataKind = e.target.innerHTML;
+    overallData = metaData[metaDataKind];
+    whatKind = Object.keys(overallData)[0];
+    initView();
+    //e.target -> activated tab
+    //e.relatedTarget -> previous tab
+});
 
-var select = document.getElementById("menu1");
-for (var key in overallData) {
-    var li = document.createElement('li');
-    li.innerHTML = '<a href="#">' + key + '</a>'
-    select.appendChild(li);
-}
+// Init View
+function initView() {
+    if (metaDataKind == 'Categorical') {
+        // Populate dropdown menu for Categorical Data
+        select.innerHTML = "";
+        for (var key in overallData) {
+            var li = document.createElement('li');
+            li.innerHTML = '<a href="#">' + key + '</a>'
+            select.appendChild(li);
+        }
 
+        // Init data
+        button1.innerHTML = whatKind + " &nbsp; <span class=\"caret\"></span>"
+        p1.innerHTML = "Distribution of tennis players by " + whatKind;
 
-var button1 = document.getElementById("dropdownMenu1");
-button1.innerHTML = whatKind + " &nbsp; <span class=\"caret\"></span>"
-var p1 = document.getElementById("barChartp1");
-p1.innerHTML = "Distribution of tennis players by " + whatKind
+        //initChart
+        getCurrentData(whatKind, players);
+        modifyBarChart(currentData);
 
-function getEventTarget(e) {
-    e = e || window.event;
-    return e.target || e.srcElement;
-}
+    } else if (metaDataKind == 'Numerical') {
+        // Populate dropdown menu for Numerical Data
+        select2.innerHTML = "";
+        for (var key in overallData) {
+            var li = document.createElement('li');
+            li.innerHTML = '<a href="#">' + key + '</a>'
+            select2.appendChild(li);
+        }
 
-var ul = document.getElementById('menu1');
-ul.onclick = function (event) {
-    var target = getEventTarget(event);
-    button1.innerHTML = target.innerHTML + " &nbsp; <span class=\"caret\"></span>"
-    whatKind = target.innerHTML;
-    p1.innerHTML = "Distribution of tennis players by " + whatKind
-    document.getElementById("cb1").checked = true;
-    checkBoxed = true;
-    document.getElementById("slider1").value = 20;
-    getCurrentData(whatKind, players);
-    modifyCharts(currentData);
-};
+        button2.innerHTML = whatKind + " &nbsp; <span class=\"caret\"></span>"
+        p2.innerHTML = "Distribution of tennis players by " + whatKind
 
-function checkBoxChanged(checkbox) {
-    checkBoxed = checkbox.checked;
-    if (checkBoxed== true) {
-        getCurrentData(whatKind, players, true);
-        modifyCharts(currentData);
-    } else {
-        getCurrentData(whatKind, players, false);
-        modifyCharts(currentData);
+        getCurrentData(whatKind, players);
+        modifyHistogram(currentData);
     }
-}
-
-var slider = document.getElementById("slider1");
-// Update the current slider value (each time you drag the slider handle)
-slider.oninput = function () {
-    getCurrentData(whatKind, players, checkBoxed, this.value);
-    modifyCharts(currentData);
 }

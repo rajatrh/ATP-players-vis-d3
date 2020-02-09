@@ -1,10 +1,55 @@
+var checkBoxed = true;
+var select = document.getElementById("menu1");
+var button1 = document.getElementById("dropdownMenu1");
+var p1 = document.getElementById("barChartp1");
+var ul = document.getElementById('menu1');
+// Slider event handled
+var slider = document.getElementById("slider1");
+
+initView("Categorical");
+
+function getEventTarget(e) {
+    e = e || window.event;
+    return e.target || e.srcElement;
+}
+
+
+// On click of dropdown menu
+ul.onclick = function (event) {
+    var target = getEventTarget(event);
+    button1.innerHTML = target.innerHTML + " &nbsp; <span class=\"caret\"></span>"
+    whatKind = target.innerHTML;
+    p1.innerHTML = "Distribution of tennis players by " + whatKind
+    document.getElementById("cb1").checked = true;
+    checkBoxed = true;
+    document.getElementById("slider1").value = 20;
+    getCurrentData(whatKind, players);
+    modifyBarChart(currentData);
+};
+
+// Checkbox event handled
+function checkBoxChanged(checkbox) {
+    checkBoxed = checkbox.checked;
+    if (checkBoxed == true) {
+        getCurrentData(whatKind, players, true);
+        modifyBarChart(currentData);
+    } else {
+        getCurrentData(whatKind, players, false);
+        modifyBarChart(currentData);
+    }
+}
+
+
+// Update the current slider value (each time you drag the slider handle)
+slider.oninput = function () {
+    getCurrentData(whatKind, players, checkBoxed, this.value);
+    modifyBarChart(currentData);
+}
+
+
 // function to recreate bar chart
-function modifyCharts(players) {
-
-    var margin = { top: 20, right: 20, bottom: 50, left: 50 };
-    var width = parseInt(d3.select("#barChartContainer").style("width")) - margin.left - margin.right;
-    var height = 380 - margin.top - margin.bottom;
-
+function modifyBarChart(players) {
+    console.log(width)
     var x = d3.scaleBand()
         .rangeRound([0, width])
         .paddingOuter(0.2)
@@ -33,7 +78,7 @@ function modifyCharts(players) {
     x.domain(players.map(function (d) { return d.key; }));
     y.domain([0, d3.max(players, function (d) { return d.value; })]);
 
-    // x- axis
+    // This is the xaxis
     g.append("g")
         .attr("transform", "translate(0," + (height) + ")")
         .call(d3.axisBottom(x))
@@ -43,16 +88,18 @@ function modifyCharts(players) {
         .attr("text-anchor", "end")
         .attr("transform", "rotate(-40)");
 
+    // Label for x axis
     g.append("text")
         .attr("y", height + 70)
         .attr("dx", width / 2 - margin.left)
         .attr("text-anchor", "start")
         .text(whatKind)
 
-    //y-axis
+    //Y axis
     g.append("g")
         .call(d3.axisLeft(y).ticks(10))
 
+    // Label for y axis
     g.append("text")
         .attr("transform", "rotate(-90)")
         .attr("x", -height / 2)

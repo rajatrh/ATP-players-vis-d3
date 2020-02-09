@@ -1,20 +1,42 @@
-// function to recreate bar chart
-function modifyCharts(players) {
+var formatCount = d3.format(",.0f");
+// Populate dropdown menu for Numerical Data
+var select2 = document.getElementById("menu2");
+// Init data
+var button2 = document.getElementById("dropdownMenu2");
+var p2 = document.getElementById("barChartp2");
+var ul2 = document.getElementById('menu2');
+// Slider event handled
+var slider2 = document.getElementById("slider2");
 
-    var margin = { top: 20, right: 20, bottom: 50, left: 50 };
-    var width = parseInt(d3.select("#barChartContainer").style("width")) - margin.left - margin.right;
-    var height = 380 - margin.top - margin.bottom;
+initView("Numerical");
 
-    var x = d3.scaleBand()
-        .rangeRound([0, width])
-        .paddingOuter(0.2)
-        .paddingInner(0.1);
+function getEventTarget(e) {
+    e = e || window.event;
+    return e.target || e.srcElement;
+}
 
-    var y = d3.scaleLinear()
-        .rangeRound([height, 0]);
-    document.getElementById("barChartContainer").innerHTML = "";
+// On click of dropdown menu
+ul2.onclick = function (event) {
+    var target = getEventTarget(event);
+    button2.innerHTML = target.innerHTML + " &nbsp; <span class=\"caret\"></span>"
+    whatKind = target.innerHTML;
+    p2.innerHTML = "Distribution of tennis players by " + whatKind
+    document.getElementById("slider2").value = 15;
+    getCurrentData(whatKind, players);
+    modifyHistogram(currentData);
+};
 
-    svg = d3.select("#barChartContainer")
+// Update the current slider value (each time you drag the slider handle)
+slider2.oninput = function () {
+    getCurrentData(whatKind, players, true);
+    modifyHistogram(currentData, this.value);
+}
+
+// function to recreate histogram
+function modifyHistogram(values, noOfBins=15) {
+    document.getElementById("histogramContainer").innerHTML = "";
+
+    svg = d3.select("#histogramContainer")
         .append("svg")
         .attr("class", "svg-bkg")
         .attr("width", "100%")
@@ -23,22 +45,35 @@ function modifyCharts(players) {
     g = svg.append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    var tip = d3.select("#barChartContainer")
+    var tip = d3.select("#histogramContainer")
         .append("div")
         .attr("class", "tip")
         .style("position", "absolute")
         .style("visibility", "hidden")
         .style("z-index", "20");
 
-    x.domain(players.map(function (d) { return d.key; }));
-    y.domain([0, d3.max(players, function (d) { return d.value; })]);
+    var x = d3.scaleLinear()
+        .domain(d3.extent(values))
+        .rangeRound([0, 500])
 
-    // x- axis
+    var histogram = d3.histogram()
+        .domain(x.domain())
+        .thresholds(x.ticks(noOfBins));
+
+    var bins = histogram(values);
+
+    var y = d3.scaleLinear()
+        .domain([0, d3.max(bins, function (d) {
+            return d.length;
+        })])
+        .rangeRound([height, 0]);
+
+    //x- axis
     g.append("g")
         .attr("transform", "translate(0," + (height) + ")")
-        .call(d3.axisBottom(x))
+        .call(d3.axisBottom(x).ticks(noOfBins))
         .selectAll("text")
-        .attr("x", "-5")
+        .attr("x", "5")
         .attr("y", "15")
         .attr("text-anchor", "end")
         .attr("transform", "rotate(-40)");
@@ -59,36 +94,35 @@ function modifyCharts(players) {
         .attr("y", -40)
         .attr("text-anchor", "end")
         .text("Count")
+        
 
-    //on hover
-    g.selectAll(".bar")
-        .data(players)
-        .enter().append("rect")
+
+    //Transform before
+    var bar = g.selectAll(".bar")
+        .data(bins)
+        .enter().append("g")
         .attr("class", "bar")
-        .attr("x", function (d) { return x(d.key); })
-        .attr("y", function (d) { return y(d.value); })
-        .attr("width", x.bandwidth() - 5)
-        .attr("height", function (d) { return height - y(d.value) })
-        .on("mouseover", function (d) {
-
-            // increase the width
-            var xPos = +d3.select(this).attr("x")
-            var wid = +d3.select(this).attr("width");
-            d3.select(this).attr("x", xPos - 3).attr("width", wid + 6);
+        .attr("transform", function (d) {
+            return "translate(" + x(d.x0) + "," + y(d.length) + ")";
+        }).on("mouseover", function (d) {
 
             // Create tip with HTML
             return tip.html(function () {
-                return "<strong> " + d.key + "</strong> : <span style='color:orange'>" + d.value + "</span>";   //tip.text(d.value)
+                return "<strong> " + d.x0 +  " - " + d.x1 + " </strong> : <span style='color:orange'> "+ d.length  +" </span>";   //tip.text(d.value)
             }).style("visibility", "visible")
-                .style("top", (y(d.value) - 11) + 'px')
-                .style("left", x(d.key) + x.bandwidth() + 4 + 'px')
+                .style("top", (y(d.length) - 11) + 'px')
+                .style("left", x(d.x0) + 5 + 'px')
         })
         .on("mouseout", function () {
-            // reset the width and postition
-            d3.select(this).attr("x", function (d) {
-                return x(d.key)
-            })
-                .attr("width", x.bandwidth() - 5);
             return tip.style("visibility", "hidden");
         });
+
+    bar.append("rect")
+        .attr("x", 1)
+        .attr("width", x(bins[0].x1) - x(bins[0].x0) - 2)
+        .attr("height", function (d) {
+            return height - y(d.length);
+        });
+
+
 }

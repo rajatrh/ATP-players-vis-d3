@@ -8,7 +8,7 @@ class player {
     this.age = +p.age;
     this.birth = new Date(p.birth);
     this.turned_pro = +p.turned_pro
-    this.weight = p.weight;
+    this.weight = +p.weight;
     this.height = +p.height;
     this.plays = p.plays;
     this.aces = +p.aces;

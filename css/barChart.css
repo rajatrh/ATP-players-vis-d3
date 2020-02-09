@@ -1,4 +1,8 @@
 #barChartContainer{
+  position: relative;
+}
+
+#histogramContainer{
     position: relative;
 }
 
