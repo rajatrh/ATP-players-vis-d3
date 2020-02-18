@@ -6,6 +6,7 @@ var height = 380 - margin.top - margin.bottom;
 fileName = "data/ATP/players_info.csv";
 players = []
 d3.csv(fileName).then(function (data) {
+    console.log(data)
     data.forEach(p => {
         var play = new player(p);
         players.push(play);

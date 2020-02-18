@@ -7,7 +7,9 @@ var p2 = document.getElementById("barChartp2");
 var ul2 = document.getElementById('menu2');
 // Slider event handled
 var slider2 = document.getElementById("slider2");
+var slider2Value = document.getElementById("slider2Value");
 
+slider2Value.innerHTML = '15';
 initView("Numerical");
 
 function getEventTarget(e) {
@@ -22,18 +24,21 @@ ul2.onclick = function (event) {
     whatKind = target.innerHTML;
     p2.innerHTML = "Distribution of tennis players by " + whatKind
     document.getElementById("slider2").value = 15;
+    slider2Value.innerHTML = '15';
     getCurrentData(whatKind, players);
     modifyHistogram(currentData);
 };
 
 // Update the current slider value (each time you drag the slider handle)
 slider2.oninput = function () {
+    console.log('In the slider: ' + this.value)
+    slider2Value.innerHTML = this.value;
     getCurrentData(whatKind, players, true);
     modifyHistogram(currentData, this.value);
 }
 
 // function to recreate histogram
-function modifyHistogram(values, noOfBins=15) {
+function modifyHistogram(values, noOfBins) {
     document.getElementById("histogramContainer").innerHTML = "";
 
     svg = d3.select("#histogramContainer")
@@ -54,14 +59,13 @@ function modifyHistogram(values, noOfBins=15) {
 
     var x = d3.scaleLinear()
         .domain(d3.extent(values))
-        .rangeRound([0, 500])
+        .rangeRound([0, width])
 
     var histogram = d3.histogram()
         .domain(x.domain())
         .thresholds(x.ticks(noOfBins));
 
     var bins = histogram(values);
-
     var y = d3.scaleLinear()
         .domain([0, d3.max(bins, function (d) {
             return d.length;
@@ -96,7 +100,6 @@ function modifyHistogram(values, noOfBins=15) {
         .text("Count")
         
 
-
     //Transform before
     var bar = g.selectAll(".bar")
         .data(bins)
@@ -110,8 +113,8 @@ function modifyHistogram(values, noOfBins=15) {
             return tip.html(function () {
                 return "<strong> " + d.x0 +  " - " + d.x1 + " </strong> : <span style='color:orange'> "+ d.length  +" </span>";   //tip.text(d.value)
             }).style("visibility", "visible")
-                .style("top", (y(d.length) - 11) + 'px')
-                .style("left", x(d.x0) + 5 + 'px')
+                .style("top", y(d.length) + 'px')
+                .style("left", x(d.x0) + ((d.x1 - d.x0) * 5) + 'px')
         })
         .on("mouseout", function () {
             return tip.style("visibility", "hidden");
@@ -119,7 +122,7 @@ function modifyHistogram(values, noOfBins=15) {
 
     bar.append("rect")
         .attr("x", 1)
-        .attr("width", x(bins[0].x1) - x(bins[0].x0) - 2)
+        .attr("width", x(bins[0].x1) - x(bins[0].x0) -2)
         .attr("height", function (d) {
             return height - y(d.length);
         });

@@ -5,7 +5,9 @@ var p1 = document.getElementById("barChartp1");
 var ul = document.getElementById('menu1');
 // Slider event handled
 var slider = document.getElementById("slider1");
+var slider1Value = document.getElementById("slider1Value");
 
+slider1Value.innerHTML = '20';
 initView("Categorical");
 
 function getEventTarget(e) {
@@ -23,6 +25,7 @@ ul.onclick = function (event) {
     document.getElementById("cb1").checked = true;
     checkBoxed = true;
     document.getElementById("slider1").value = 20;
+    slider1Value.innerHTML = '20';
     getCurrentData(whatKind, players);
     modifyBarChart(currentData);
 };
@@ -39,17 +42,17 @@ function checkBoxChanged(checkbox) {
     }
 }
 
-
 // Update the current slider value (each time you drag the slider handle)
 slider.oninput = function () {
     getCurrentData(whatKind, players, checkBoxed, this.value);
+    slider1Value.innerHTML = this.value;
     modifyBarChart(currentData);
 }
 
-
 // function to recreate bar chart
 function modifyBarChart(players) {
-    console.log(width)
+    console.log(players)
+    // console.log(width)
     var x = d3.scaleBand()
         .rangeRound([0, width])
         .paddingOuter(0.2)
@@ -119,23 +122,32 @@ function modifyBarChart(players) {
         .on("mouseover", function (d) {
 
             // increase the width
-            var xPos = +d3.select(this).attr("x")
+            var xPos = +d3.select(this).attr("x");
+            var yPos = +d3.select(this).attr("y");
+            //console.log(yPos)
             var wid = +d3.select(this).attr("width");
+            var hei = +d3.select(this).attr("height");
             d3.select(this).attr("x", xPos - 3).attr("width", wid + 6);
+            d3.select(this).attr("height", hei+5)
+            d3.select(this).attr("y", yPos-5)
 
             // Create tip with HTML
             return tip.html(function () {
-                return "<strong> " + d.key + "</strong> : <span style='color:orange'>" + d.value + "</span>";   //tip.text(d.value)
+                return "<span style='font-weight: bold !important'> <b>" + d.key + "</b></span> : <span style='color:black'>" + d.value + "</span>";   //tip.text(d.value)
             }).style("visibility", "visible")
-                .style("top", (y(d.value) - 11) + 'px')
-                .style("left", x(d.key) + x.bandwidth() + 4 + 'px')
+                .style("top", (y(d.value) - 22) + 'px')
+                .style("left", x(d.key) + (x.bandwidth()) + 12 + 'px')
         })
         .on("mouseout", function () {
             // reset the width and postition
+            var hei = +d3.select(this).attr("height");
+            var yPos = +d3.select(this).attr("y");
             d3.select(this).attr("x", function (d) {
                 return x(d.key)
             })
-                .attr("width", x.bandwidth() - 5);
+                .attr("width", x.bandwidth() - 5)
+                .attr("height", hei-5)
+                .attr("y", yPos+5);
             return tip.style("visibility", "hidden");
         });
 }
