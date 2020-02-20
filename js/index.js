@@ -6,19 +6,26 @@ var height = 380 - margin.top - margin.bottom;
 fileName = "data/ATP/players_info.csv";
 players = []
 d3.csv(fileName).then(function (data) {
-    console.log(data)
     data.forEach(p => {
         var play = new player(p);
         players.push(play);
     });
 
-    getCurrentData(whatKind, players);
+    getCurrentData(whatKind);
     modifyBarChart(currentData);
+});
+
+fileName2 = "data/ATP/atp_info.csv";
+tournaments = []
+d3.csv(fileName2).then(function (data) {
+    data.forEach(t => {
+        var tour = new tournament(t);
+        tournaments.push(tour);
+    });
 });
 
 // Capture tab Change
 $('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
-    console.log()
     metaDataKind = e.target.innerHTML;
     overallData = metaData[metaDataKind];
     whatKind = Object.keys(overallData)[0];
@@ -40,10 +47,10 @@ function initView() {
 
         // Init data
         button1.innerHTML = whatKind + " &nbsp; <span class=\"caret\"></span>"
-        p1.innerHTML = "Distribution of tennis players by " + whatKind;
+        p1.innerHTML = "Distribution of tennis " + overallData[whatKind]['file'] + "s by " + whatKind;
 
         //initChart
-        getCurrentData(whatKind, players);
+        getCurrentData(whatKind);
         modifyBarChart(currentData);
 
     } else if (metaDataKind == 'Numerical') {
@@ -56,9 +63,9 @@ function initView() {
         }
 
         button2.innerHTML = whatKind + " &nbsp; <span class=\"caret\"></span>"
-        p2.innerHTML = "Distribution of tennis players by " + whatKind
+        p2.innerHTML = "Distribution of tennis "+ overallData[whatKind]['file'] + "s by" + whatKind
 
-        getCurrentData(whatKind, players);
-        modifyHistogram(currentData);
+        getCurrentData(whatKind);
+        modifyHistogram(currentData, 15);
     }
 }

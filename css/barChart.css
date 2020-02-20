@@ -30,6 +30,7 @@ svg{
 }
 
 .tip{
+  width: 160px;
   padding: 4px;
   background-color: #eee;
   text-align: center;

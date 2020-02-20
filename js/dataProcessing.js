@@ -1,14 +1,24 @@
 metaData = {
     "Categorical": {
-        "Nationality": { key: "nat", data: [], natData: [] },
-        "Age": { key: "age", data: [], natData: [] },
-        "Turned Pro": { key: "turned_pro", data: [], natData: [] }
+        "Nationality": { file: "player", key: "nat", data: [], natData: [] },
+        "Age": { file: "player", key: "age", data: [], natData: [] },
+        "Turned Pro": { file: "player", key: "turned_pro", data: [], natData: [] },
+        "Location": { file: "tour", key: "location", data: [], natData: [] },
+        "Tournament": { file: "tour", key: "tournament", data: [], natData: [] },
+        "Series": { file: "tour", key: "series", data: [], natData: [] },
+        "Court": { file: "tour", key: "court", data: [], natData: [] },
+        "Surface": { file: "tour", key: "surface", data: [], natData: [] },
+        "Round": { file: "tour", key: "round", data: [], natData: [] }
     },
     "Numerical": {
-        "Weight": { key: "weight", data: [], natData: [] },
-        "Height": { key: "height", data: [], natData: [] },
-        "Aces": { key: "aces", data: [], natData: [] },
-        "Double Faults": { key: "double_faults", data: [], natData: [] }
+        "Weight": { file: "player", key: "weight", data: [], natData: [] },
+        "Height": { file: "player", key: "height", data: [], natData: [] },
+        "Aces": { file: "player", key: "aces", data: [], natData: [] },
+        "Double Faults": { file: "player", key: "double_faults", data: [], natData: [] },
+        "Winner Rank": { file: "tour", key: "wrank", data: [], natData: [] },
+        "Loser Rank": { file: "tour", key: "lrank", data: [], natData: [] },
+        "Winner Points": { file: "tour", key: "wpts", data: [], natData: [] },
+        "Loser points": { file: "tour", key: "lpts", data: [], natData: [] }
     }
 }
 
@@ -18,19 +28,30 @@ currentData = [];
 
 var whatKind = Object.keys(overallData)[0];
 
-function processCategoricalData(viewWhat, players) {
+function processCategoricalData(viewWhat) {
     key = overallData[viewWhat]['key'];
     repMap = {};
-    players.forEach(player => {
-        if (player[key] != 0) {
-            if (!(player[key] in repMap)) {
-                repMap[player[key]] = 1;
-            } else {
-                repMap[player[key]] += 1;
+    if (overallData[viewWhat]['file'] == 'player') {
+        players.forEach(player => {
+            if (player[key] != 0) {
+                if (!(player[key] in repMap)) {
+                    repMap[player[key]] = 1;
+                } else {
+                    repMap[player[key]] += 1;
+                }
             }
-        }
-    });
-
+        });
+    } else {
+        tournaments.forEach(tour => {
+            if (tour[key] != 0) {
+                if (!(tour[key] in repMap)) {
+                    repMap[tour[key]] = 1;
+                } else {
+                    repMap[tour[key]] += 1;
+                }
+            }
+        });
+    }
     var sortable = [];
     for (var key in repMap) {
         sortable.push([key, repMap[key]]);
@@ -56,25 +77,33 @@ function processCategoricalData(viewWhat, players) {
     overallData[viewWhat]['data'] = repMap;
 }
 
-function processNumericalData(viewWhat, players) {
+function processNumericalData(viewWhat) {
     key = overallData[viewWhat]['key'];
     values = [];
-    players.forEach(player => {
-        if (player[key] != 0) {
-            values.push(player[key]);
-        }
-    });
-
+    if (overallData[viewWhat]['file'] == 'player') {
+        players.forEach(player => {
+            if (player[key] != 0) {
+                values.push(player[key]);
+            }
+        });
+    } else {
+        tournaments.forEach(tour => {
+            if (tour[key] != 0) {
+                values.push(tour[key]);
+            }
+        });
+    }
+    
     values.sort(function (a, b) {
         return a - b;
     });
     overallData[viewWhat]['data'] = values;
 }
 
-function getCurrentData(viewWhat, players, sorted = true, sliceValue = 20) {
+function getCurrentData(viewWhat, sorted = true, sliceValue = 20) {
     if (metaDataKind == 'Categorical') {
         if (overallData[viewWhat]['data'].length == 0) {
-            processCategoricalData(viewWhat, players);
+            processCategoricalData(viewWhat);
         }
         if (sorted) {
             currentData = overallData[viewWhat]['data'].slice(0, sliceValue);
@@ -83,7 +112,7 @@ function getCurrentData(viewWhat, players, sorted = true, sliceValue = 20) {
         }
     } else if (metaDataKind == 'Numerical') {
         if (overallData[viewWhat]['data'].length == 0) {
-            processNumericalData(viewWhat, players);
+            processNumericalData(viewWhat);
         }
         currentData = overallData[viewWhat]['data'];
     }

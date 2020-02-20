@@ -37,10 +37,5 @@ class player {
     this.place_birth = p.place_birth;
     this.residence = p.residence;
     }
-    
-
-    // this.printInfo = function() { 
-    //     console.log(this.name); 
-    //     console.log(this.age); 
-    // } 
+     
 } 

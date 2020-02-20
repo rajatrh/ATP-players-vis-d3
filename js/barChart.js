@@ -21,12 +21,12 @@ ul.onclick = function (event) {
     var target = getEventTarget(event);
     button1.innerHTML = target.innerHTML + " &nbsp; <span class=\"caret\"></span>"
     whatKind = target.innerHTML;
-    p1.innerHTML = "Distribution of tennis players by " + whatKind
+    p1.innerHTML = "Distribution of tennis " + overallData[whatKind]['file'] + "s by " + whatKind
     document.getElementById("cb1").checked = true;
     checkBoxed = true;
     document.getElementById("slider1").value = 20;
     slider1Value.innerHTML = '20';
-    getCurrentData(whatKind, players);
+    getCurrentData(whatKind);
     modifyBarChart(currentData);
 };
 
@@ -34,24 +34,23 @@ ul.onclick = function (event) {
 function checkBoxChanged(checkbox) {
     checkBoxed = checkbox.checked;
     if (checkBoxed == true) {
-        getCurrentData(whatKind, players, true);
+        getCurrentData(whatKind, true);
         modifyBarChart(currentData);
     } else {
-        getCurrentData(whatKind, players, false);
+        getCurrentData(whatKind, false);
         modifyBarChart(currentData);
     }
 }
 
 // Update the current slider value (each time you drag the slider handle)
 slider.oninput = function () {
-    getCurrentData(whatKind, players, checkBoxed, this.value);
+    getCurrentData(whatKind, checkBoxed, this.value);
     slider1Value.innerHTML = this.value;
     modifyBarChart(currentData);
 }
 
 // function to recreate bar chart
 function modifyBarChart(players) {
-    console.log(players)
     // console.log(width)
     var x = d3.scaleBand()
         .rangeRound([0, width])
@@ -135,8 +134,8 @@ function modifyBarChart(players) {
             return tip.html(function () {
                 return "<span style='font-weight: bold !important'> <b>" + d.key + "</b></span> : <span style='color:black'>" + d.value + "</span>";   //tip.text(d.value)
             }).style("visibility", "visible")
-                .style("top", (y(d.value) - 22) + 'px')
-                .style("left", x(d.key) + (x.bandwidth()) + 12 + 'px')
+                .style("top", (y(d.value) - 32) + 'px')
+                .style("left", x(d.key) - 5 + 'px')
         })
         .on("mouseout", function () {
             // reset the width and postition
