@@ -63,7 +63,6 @@ function modifyHistogram(values, noOfBins) {
 
     var histogram = d3.histogram()
         .domain(x.domain())
-        //.thresholds(x.ticks(noOfBins));
         .thresholds(d3.range(x.domain()[0],x.domain()[1],(x.domain()[1]-x.domain()[0])/noOfBins));
     
     var bins = histogram(values);

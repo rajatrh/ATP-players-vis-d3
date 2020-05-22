@@ -127,12 +127,13 @@ function modifyBarChart(players) {
             var wid = +d3.select(this).attr("width");
             var hei = +d3.select(this).attr("height");
             d3.select(this).attr("x", xPos - 3).attr("width", wid + 6);
-            d3.select(this).attr("height", hei+5)
-            d3.select(this).attr("y", yPos-5)
+            d3.select(this).attr("height", hei + 5)
+            d3.select(this).attr("y", yPos - 5)
 
             // Create tip with HTML
             return tip.html(function () {
-                return "<span style='font-weight: bold !important'> <b>" + d.key + "</b></span> : <span style='color:black'>" + d.value + "</span>";   //tip.text(d.value)
+                return "<span style='font-weight: bold !important'> <b>" + d.key +
+                    "</b></span> : <span style='color:black'>" + d.value + "</span>";
             }).style("visibility", "visible")
                 .style("top", (y(d.value) - 32) + 'px')
                 .style("left", x(d.key) - 5 + 'px')
@@ -145,8 +146,8 @@ function modifyBarChart(players) {
                 return x(d.key)
             })
                 .attr("width", x.bandwidth() - 5)
-                .attr("height", hei-5)
-                .attr("y", yPos+5);
+                .attr("height", hei - 5)
+                .attr("y", yPos + 5);
             return tip.style("visibility", "hidden");
         });
 }
